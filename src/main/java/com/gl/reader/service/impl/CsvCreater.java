@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.gl.reader.FileReaderHashApplication.*;
+import static com.gl.reader.service.ProcessController.BookHashMap;
+import static com.gl.reader.service.ProcessController.propertiesReader;
 
 
 public class CsvCreater {
@@ -31,13 +32,13 @@ public class CsvCreater {
 
     static Logger logger = LogManager.getLogger(CsvCreater.class);
 
-    public static void makeErrorCsv(String outputLocation, String sourceName, String folderName, String fileName , Set <Book>  errorFile) {
+    public static void makeErrorCsv(String outputLocation, String sourceName, String folderName, String fileName, Set<Book> errorFile) {
         FileWriter fileWriter = null;
         String errorPathTillCurrent = outputLocation + "/" + sourceName + "/" + folderName + "/error/" + year + "/" + month + "/" + day + "/";
 
         try {
             // rename file
-            createNRenameFileIfExists (  errorPathTillCurrent ,  fileName);
+            createAndRenameFileIfExists(errorPathTillCurrent, fileName);
             if (!errorFile.isEmpty()) {// optimise to not create folder
                 fileWriter = new FileWriter(errorPathTillCurrent + fileName);
                 fileWriter.append(propertiesReader.fileHeader);
@@ -70,36 +71,35 @@ public class CsvCreater {
 
         } catch (Exception e) {
             logger.info("Error in CsvFileWriter for Error File!!!" + e);
-            Alert. raiseAlert(Alerts.ALERT_006, Map.of("<e>", e.toString() + " Not able to crete error CSV  ", "<process_name>", "CDR_pre_processor"), 0);
+            Alert.raiseAlert(Alerts.ALERT_006, Map.of("<e>", e.toString() + " Not able to crete error CSV  ", "<process_name>", "CDR_pre_processor"), 0);
         }
     }
 
-        public static void createNRenameFileIfExists ( String pathTillCurrent , String fileName) throws IOException {
-            Path pathDay = Paths.get(pathTillCurrent +"/");
-            if (!Files.exists(pathDay)) {
-                Files.createDirectories(pathDay);
-                logger.info("Directory created for error");
-            }
-            if (Files.exists(Paths.get(pathTillCurrent +"/" + fileName))) {
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                File sourceFile = new File(pathTillCurrent  +"/"+ fileName);
-                String newName = fileName + "-" + sdf.format(timestamp);
-                File destFile = new File(pathTillCurrent  +"/"+ newName);
-                if (sourceFile.renameTo(destFile)) {
-                    logger.info("File renamed successfully");
-                } else {
-                    logger.info("Failed to rename file");
-                }
+    public static void createAndRenameFileIfExists(String pathTillCurrent, String fileName) throws IOException {
+        Path pathDay = Paths.get(pathTillCurrent + "/");
+        if (!Files.exists(pathDay)) {
+            Files.createDirectories(pathDay);
+            logger.info("Directory created for error");
+        }
+        if (Files.exists(Paths.get(pathTillCurrent + "/" + fileName))) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            File sourceFile = new File(pathTillCurrent + "/" + fileName);
+            String newName = fileName + "-" + sdf.format(timestamp);
+            File destFile = new File(pathTillCurrent + "/" + newName);
+            if (sourceFile.renameTo(destFile)) {
+                logger.info("File renamed successfully");
+            } else {
+                logger.info("Failed to rename file");
             }
         }
+    }
 
 
-
-    public static void makeCsv(String outputLocation, String sourceName, String folderName, String fileName , int returnCount ) {
+    public static void makeCsv(String outputLocation, String sourceName, String folderName, String fileName, int returnCount) {
         FileWriter fileWriter = null;
         int i = 1;
         try {
-            createNRenameFileIfExists ( outputLocation + "/" + sourceName + "/" + folderName + "/" + "output/", fileName);
+            createAndRenameFileIfExists(outputLocation + "/" + sourceName + "/" + folderName + "/" + "output/", fileName);
 
             if (returnCount == 0) {
                 logger.info("inside non split block");
@@ -233,9 +233,6 @@ public class CsvCreater {
             }
         }
     }
-
-
-
 
 
 }

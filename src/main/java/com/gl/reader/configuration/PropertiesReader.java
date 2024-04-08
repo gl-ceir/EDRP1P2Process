@@ -76,7 +76,6 @@ public class PropertiesReader {
     @Value("#{'${REPORT-TYPE}'.split(',')}")
     public Set<String> reportType;
     
-    
     @Value("#{'${IMS-SOURCE}'.split(',')}")
     public List<String> imsSources;
 

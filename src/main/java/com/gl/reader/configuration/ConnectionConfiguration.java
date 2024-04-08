@@ -13,23 +13,6 @@ public class ConnectionConfiguration {
     @PersistenceContext
     private EntityManager em;
 
-//    private static ConnectionConfiguration connectionConfiguration;
-//    public Connection connection;
-//    public ConnectionConfiguration(EntityManager em) {
-//        System.out.println("EM " + em);
-//        try {
-//            EntityManagerFactoryInfo info = (EntityManagerFactoryInfo) em.getEntityManagerFactory();
-//            info.getDataSource().getConnection();
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage(), e);
-//        }
-//    }
-//    public static ConnectionConfiguration getConnection() {
-//        if (connectionConfiguration == null)
-//            connectionConfiguration = new ConnectionConfiguration(em);
-//        return connectionConfiguration;
-//    }
-
     public Connection getConnection() {
         EntityManagerFactoryInfo info = (EntityManagerFactoryInfo) em.getEntityManagerFactory();
         try {

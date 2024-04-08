@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 
-import static com.gl.reader.FileReaderHashApplication.auddbName;
+import static com.gl.reader.service.ProcessController.auddbName;
 
 public class ModulesAudit {
     static Logger logger = LogManager.getLogger(ModulesAudit.class);

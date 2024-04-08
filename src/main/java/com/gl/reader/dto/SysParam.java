@@ -12,27 +12,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.gl.reader.FileReaderHashApplication.*;
+import static com.gl.reader.service.ProcessController.appdbName;
 
 
 public class SysParam {
     static Logger logger = LogManager.getLogger(SysParam.class);
 
-    public static Map<String, String> getCdrImeiLengthValues(Connection conn) {
-        Map<String, String> cdrImeiCheckMap = new HashMap<String, String>();
+    public static Map<String, String> imeiLengthValueCheck(Connection conn) {
+        Map<String, String> ImeiCheckMap = new HashMap<String, String>();
         String sql = "select tag , value  from " + appdbName + ".sys_param where tag in  " +
                 " ('CDR_IMEI_LENGTH_CHECK' ,'CDR_IMEI_LENGTH_VALUE','CDR_NULL_IMEI_CHECK','CDR_NULL_IMEI_REPLACE_PATTERN'   , 'CDR_ALPHANUMERIC_IMEI_CHECK')";
         logger.info("Fetching details " + sql);
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
             while (rs.next()) {
-                cdrImeiCheckMap.put(rs.getString("tag"), rs.getString("value"));
+                ImeiCheckMap.put(rs.getString("tag"), rs.getString("value"));
             }
         } catch (Exception e) {
             logger.error("Not able to access details from sys_param " + e);
-            Alert.raiseAlert( Alerts.ALERT_006, Map.of("<e>", "not able to  access details from sys_param " + e.toString() + ". in   ", "<process_name>", "CDR_pre_processor"), 0);
+            Alert.raiseAlert(Alerts.ALERT_006, Map.of("<e>", "not able to  access details from sys_param " + e.toString() + ". in   ", "<process_name>", "p1p2_pre_processor"), 0);
             System.exit(0);
         }
-        return cdrImeiCheckMap;
+        return ImeiCheckMap;
     }
 
 
@@ -48,7 +48,7 @@ public class SysParam {
             return Arrays.asList(response.split(","));
         } catch (Exception e) {
             logger.error("Not able to access details from sys_param " + e);
-            Alert.raiseAlert(  Alerts.ALERT_006, Map.of("<e>", "file pattern not access " + e.toString() + ". in   ", "<process_name>", "CDR_pre_processor"), 0);
+            Alert.raiseAlert(Alerts.ALERT_006, Map.of("<e>", "file pattern not access " + e.toString() + ". in   ", "<process_name>", "p1p2_pre_processor"), 0);
             System.exit(0);
         }
         return null;

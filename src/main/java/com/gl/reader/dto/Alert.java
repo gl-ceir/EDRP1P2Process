@@ -9,8 +9,7 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.gl.reader.FileReaderHashApplication.appdbName;
-import static com.gl.reader.FileReaderHashApplication.conn;
+import static com.gl.reader.service.ProcessController.*;
 
 public class Alert {
     static Logger logger = LogManager.getLogger(Alert.class);
