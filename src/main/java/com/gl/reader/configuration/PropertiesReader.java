@@ -1,19 +1,19 @@
 package com.gl.reader.configuration;
 
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Component;
 
-@Component
-//@PropertySource("classpath:application.properties")
+import java.util.List;
+import java.util.Set;
 
+//@PropertySource("classpath:application.properties")
+@Configuration
 @PropertySources({
-    @PropertySource(value = {"file:application.properties"}, ignoreResourceNotFound = true),
-    @PropertySource(value = {"file:configuration.properties"}, ignoreResourceNotFound = true)
+        @PropertySource(value = {"file:application.properties"}, ignoreResourceNotFound = true),
+        @PropertySource(value = {"file:configuration.properties"}, ignoreResourceNotFound = true)
 })
 
 public class PropertiesReader {
@@ -21,6 +21,10 @@ public class PropertiesReader {
 
     @Value("${appdbName}")
     public String appdbName;
+
+
+    @Value("${edrappdbName}")
+    public String edrappdbName;
 
     @Value("${repdbName}")
     public String repdbName;
@@ -46,9 +50,6 @@ public class PropertiesReader {
     @Value("${FILE-HEADER}")
     public String fileHeader;
 
-    @Value("${TYPE-OF-PROCESS}")
-    public String typeOfProcess;
-
     @Value("${FILES-COUNT-PER-REPORT}")
     public Long filesCount;
 
@@ -58,24 +59,21 @@ public class PropertiesReader {
     @Value("${EXTENSION}")
     public String extension;
 
-    @Value("${SLEEP-TIME}")
-    public Integer sleepTime;
-
     @Value("${INPUT-LOCATION}")
     public String inputLocation;
 
     @Value("${OUTPUT-LOCATION}")
     public String outputLocation;
 
-    @Value("${ERROR-REPORT-FLAG}")
-    public String errorReportFlag;
+//    @Value("${ERROR-REPORT-FLAG}")
+//    public String errorReportFlag;
 
     @Value("${ROW-COUNT-FOR-SPLIT}")
     public Integer rowCountForSplit;
 
     @Value("#{'${REPORT-TYPE}'.split(',')}")
     public Set<String> reportType;
-    
+
     @Value("#{'${IMS-SOURCE}'.split(',')}")
     public List<String> imsSources;
 

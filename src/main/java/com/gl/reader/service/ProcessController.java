@@ -6,13 +6,10 @@ import com.gl.reader.constants.Alerts;
 import com.gl.reader.dto.FilePreProcessing;
 import com.gl.reader.dto.ModulesAudit;
 import com.gl.reader.model.Book;
-import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -34,10 +31,8 @@ import static com.gl.reader.service.impl.FileReaderService.getArrivalTimeFromFil
 import static com.gl.reader.service.impl.FileReaderService.moveFileToError;
 import static com.gl.reader.service.impl.RecordServiceImpl.readRecordsFromFileAndCreateHash;
 
-@EnableAsync
-@SpringBootConfiguration
-@SpringBootApplication(scanBasePackages = {"com.gl.reader"})
-@EnableEncryptableProperties
+
+@Component
 public class ProcessController {
 
     public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
@@ -50,17 +45,14 @@ public class ProcessController {
     public static long ierror = 0;
     public static long iinSet = 0;
     public static long itotalCount = 0;
-    public static String type;
     public static long value;
     public static long processed = 0;
     public static String fileName;
     public static String extension;
     public static String servername;
-    public static Integer sleep;
     public static String sourceName;
     public static String operatorName;
     public static String eventTime;
-    public static String errorFlag;
     public static long errorDuplicate = 0;
     public static long inErrorSet = 0;
     public static long totalFileCount = 0;
@@ -76,6 +68,8 @@ public class ProcessController {
     public static Integer fileCount = 0;
     public static Integer headCount = 0;
     public static String appdbName = null;
+    public static String edrappdbName = null;
+
     public static String auddbName = null;
     public static Set<Book> errorFile = new HashSet<>();
     public static Set<String> reportTypeSet = new HashSet<>();
@@ -88,13 +82,12 @@ public class ProcessController {
     public static Integer year = currentdate.getYear();
     public static List<String> ims_sources = new ArrayList<String>();
     public static PropertiesReader propertiesReader = null;
-    public static Map<String, String> cdrImeiCheckMap = new HashMap<String, String>();
+    public static Map<String, String> imeiValCheckMap = new HashMap<String, String>();
     public static String procesStart_timeStamp = null;
     public static Connection conn = null;
     public static String attributeSplitor = null;
     public static List<String> file_patterns = null;
     public static ConnectionConfiguration connectionConfiguration = null;
-
 
     public static void startApplication(ApplicationContext context, String[] args) {
         File file = null;
@@ -103,27 +96,28 @@ public class ProcessController {
         try {
             operatorName = args[0];
             sourceName = args[1];
+
             connectionConfiguration = (ConnectionConfiguration) context.getBean("connectionConfiguration");
             conn = connectionConfiguration.getConnection();
-            logger.info("Connection:" + conn);
+            logger.info("Connection::::::::::" + conn);
             DateTimeFormatter tagDtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             tag = tagDtf.format(LocalDateTime.now());
             propertiesReader = (PropertiesReader) context.getBean("propertiesReader");
             procesStart_timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
             appdbName = propertiesReader.appdbName;
+            edrappdbName = propertiesReader.edrappdbName;
+
             auddbName = propertiesReader.auddbName;
-            type = propertiesReader.typeOfProcess;
             value = propertiesReader.filesCount;  // FILES-COUNT-PER-REPORT=-1
             extension = propertiesReader.extension;
-            sleep = propertiesReader.sleepTime;
-            inputLocation = propertiesReader.inputLocation.replace("${DATA_HOME}", System.getenv("DATA_HOME"));
-            outputLocation = propertiesReader.outputLocation.replace("${DATA_HOME}", System.getenv("DATA_HOME"));
-            errorFlag = propertiesReader.errorReportFlag;
+
+            inputLocation = propertiesReader.inputLocation.replace("{DATA_HOME}",System.getenv("DATA_HOME") );   // System.getenv("DATA_HOME")
+            outputLocation = propertiesReader.outputLocation.replace("{DATA_HOME}", System.getenv("DATA_HOME"));  //System.getenv("DATA_HOME")
             returnCount = sourceName.equalsIgnoreCase("all") ? propertiesReader.rowCountForSplit : 0;
             servername = propertiesReader.servername;
             ims_sources = propertiesReader.imsSources;
             attributeSplitor = sourceName.equalsIgnoreCase("all") ? propertiesReader.commaDelimiter : propertiesReader.attributeSeperator;
-            cdrImeiCheckMap = imeiLengthValueCheck(conn);
+            imeiValCheckMap = imeiLengthValueCheck(conn);
             long startexecutionTimeNew = new Date().getTime();
             if (!sourceName.contains("all")) {
                 file_patterns = getFilePatternByOperatorSource(conn, operatorName, sourceName);
@@ -134,6 +128,7 @@ public class ProcessController {
                     reportTypeSet = new HashSet<>();
                 }
             }
+
             checkFilePresence();
 
             long filRetriver = 0;
@@ -209,7 +204,7 @@ public class ProcessController {
                             logger.info("File moved successfully and data inserted");
                             processed++;
                         } else {
-                            logger.info("Output File Report Inside {if(notin logs)remove blck} :Value : " + filRetriver + "  Processed : " + processed);
+                            logger.info("Output File Report Inside {CHEC IF it is working ?? } :Value : " + filRetriver + "  Processed : " + processed);
                             makeCsv(outputLocation, operatorName, sourceName, fileName, returnCount);
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                             LocalDateTime now = LocalDateTime.now();
@@ -246,7 +241,7 @@ public class ProcessController {
                 }
                 logger.info("End Loop-- " + "Processed- : " + processed + "Value- : " + filRetriver);
                 if (processed >= filRetriver) {  //processed <= value
-                    logger.info("Final Processed is more than Retriver ***** *****  To check if working ");
+                    logger.info("Final Processed is more than Retriver  !!!CHECKED its working");
                     makeCsv(outputLocation, operatorName, sourceName, fileName, returnCount);
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                     LocalDateTime now = LocalDateTime.now();
@@ -279,7 +274,7 @@ public class ProcessController {
             }
         } catch (Exception e) {
             logger.error(e + "in [" + Arrays.stream(e.getStackTrace()).filter(ste -> ste.getClassName().equals(ProcessController.class.getName())).collect(Collectors.toList()).get(0) + "]");
-            raiseAlert(Alerts.ALERT_006, Map.of("<e>", e.toString() + ". in file  ", "<process_name>", "CDR_pre_processor"), 0);
+            raiseAlert(Alerts.ALERT_006, Map.of("<e>", e.toString() + ". in file  ", "<process_name>", "EDR_pre_processor"), 0);
             updateModuleAudit(conn, 500, "Failure", e.getLocalizedMessage(), insertedKey, startexecutionTime, totalFileRecordsCount, totalFileCount);//numberOfRecord ,long totalFileCount
         } finally {
             try {

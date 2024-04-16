@@ -51,9 +51,9 @@ public class CsvCreater {
                 fileWriter.append(propertiesReader.commaDelimiter);
                 fileWriter.append(String.valueOf(csvf.getMSISDN()));
                 fileWriter.append(propertiesReader.commaDelimiter);
-                fileWriter.append(String.valueOf(csvf.getRecordType()));
+                fileWriter.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(csvf.getTimeStamp()));
                 fileWriter.append(propertiesReader.commaDelimiter);
-                fileWriter.append(String.valueOf(csvf.getSystemType()));
+                fileWriter.append(String.valueOf(csvf.getProtocol()));
                 fileWriter.append(propertiesReader.commaDelimiter);
                 fileWriter.append(String.valueOf(csvf.getSourceName()));
                 fileWriter.append(propertiesReader.commaDelimiter);
@@ -71,7 +71,7 @@ public class CsvCreater {
 
         } catch (Exception e) {
             logger.info("Error in CsvFileWriter for Error File!!!" + e);
-            Alert.raiseAlert(Alerts.ALERT_006, Map.of("<e>", e.toString() + " Not able to crete error CSV  ", "<process_name>", "CDR_pre_processor"), 0);
+            Alert.raiseAlert(Alerts.ALERT_006, Map.of("<e>", e.toString() + " Not able to crete error CSV  ", "<process_name>", "EDR_pre_processor"), 0);
         }
     }
 
@@ -116,9 +116,9 @@ public class CsvCreater {
                         fileWriter.append(propertiesReader.commaDelimiter);
                         fileWriter.append(String.valueOf(csvf3.getValue().getMSISDN()));
                         fileWriter.append(propertiesReader.commaDelimiter);
-                        fileWriter.append(String.valueOf(csvf3.getValue().getRecordType()));
+                        fileWriter.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(csvf3.getValue().getTimeStamp()));
                         fileWriter.append(propertiesReader.commaDelimiter);
-                        fileWriter.append(String.valueOf(csvf3.getValue().getSystemType()));
+                        fileWriter.append(String.valueOf(csvf3.getValue().getProtocol()));
                         fileWriter.append(propertiesReader.commaDelimiter);
                         fileWriter.append(String.valueOf(csvf3.getValue().getSourceName()));
                         fileWriter.append(propertiesReader.commaDelimiter);
@@ -146,9 +146,9 @@ public class CsvCreater {
                             fileWriter.append(propertiesReader.commaDelimiter);
                             fileWriter.append(String.valueOf(csvf3.getValue().getMSISDN()));
                             fileWriter.append(propertiesReader.commaDelimiter);
-                            fileWriter.append(String.valueOf(csvf3.getValue().getRecordType()));
+                            fileWriter.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(csvf3.getValue().getTimeStamp()));
                             fileWriter.append(propertiesReader.commaDelimiter);
-                            fileWriter.append(String.valueOf(csvf3.getValue().getSystemType()));
+                            fileWriter.append(String.valueOf(csvf3.getValue().getProtocol()));
                             fileWriter.append(propertiesReader.commaDelimiter);
                             fileWriter.append(String.valueOf(csvf3.getValue().getSourceName()));
                             fileWriter.append(propertiesReader.commaDelimiter);
@@ -181,9 +181,9 @@ public class CsvCreater {
                             fileWriter.append(propertiesReader.commaDelimiter);
                             fileWriter.append(String.valueOf(csvf3.getValue().getMSISDN()));
                             fileWriter.append(propertiesReader.commaDelimiter);
-                            fileWriter.append(String.valueOf(csvf3.getValue().getRecordType()));
+                            fileWriter.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(csvf3.getValue().getTimeStamp()));
                             fileWriter.append(propertiesReader.commaDelimiter);
-                            fileWriter.append(String.valueOf(csvf3.getValue().getSystemType()));
+                            fileWriter.append(String.valueOf(csvf3.getValue().getProtocol()));
                             fileWriter.append(propertiesReader.commaDelimiter);
                             fileWriter.append(String.valueOf(csvf3.getValue().getSourceName()));
                             fileWriter.append(propertiesReader.commaDelimiter);
@@ -216,7 +216,7 @@ public class CsvCreater {
             logger.info("Alert " + e.toString() + " || " + exceptionDetails);
             Map<String, String> placeholderMapForAlert = new HashMap<String, String>();
             placeholderMapForAlert.put("<e>", e.toString());
-            placeholderMapForAlert.put("<process_name>", "CDR_pre_processor");
+            placeholderMapForAlert.put("<process_name>", "EDR_pre_processor");
             Alert.raiseAlert(Alerts.ALERT_006, placeholderMapForAlert, 0);
             logger.info("Alert [ALERT_006] is raised. So, doing nothing.");
         } finally {
@@ -227,7 +227,7 @@ public class CsvCreater {
                 logger.info("Error while flushing/closing fileWriter !!!");
                 Map<String, String> placeholderMapForAlert = new HashMap<String, String>();
                 placeholderMapForAlert.put("<e>", e.toString());
-                placeholderMapForAlert.put("<process_name>", "CDR_pre_processor");
+                placeholderMapForAlert.put("<process_name>", "EDR_pre_processor");
                 Alert.raiseAlert(Alerts.ALERT_006, placeholderMapForAlert, 0);
                 logger.info("Alert [ALERT_006] is raised. So, doing nothing.");
             }

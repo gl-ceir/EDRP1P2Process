@@ -10,11 +10,9 @@
     </parent>
     <groupId>EDRP1P2Process</groupId>
     <artifactId>EDRP1P2Process</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>EDRP1P2Process</name>
     <description>Demo project for Spring Boot</description>
-
-
     <properties>
         <java.version>11</java.version>
         <log4j2.version>2.20.0</log4j2.version>
@@ -108,16 +106,11 @@
             <type>jar</type>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
- 
+
+
+
 
     <build>
         <plugins>
