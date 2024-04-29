@@ -38,6 +38,7 @@ public class RecordServiceImpl {
         String imsi = "";
         String msisdn = "";
         String protocol = "";
+        String blackListed = "0";
         try {
             String[] myArray = imeiValCheckMap.get("EDR_IMEI_LENGTH_VALUE").split(",");
             BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.US_ASCII);
@@ -70,6 +71,7 @@ public class RecordServiceImpl {
                     folder_name = sourceName;
                     file_name = fileName;
                     event_time = eventTime;
+                    blackListed = attributes[6];
                     if (attributes[9].equalsIgnoreCase("SS7"))
                         protocol = "2G";
                     if (attributes[9].equalsIgnoreCase("DIAMETER"))
@@ -77,6 +79,24 @@ public class RecordServiceImpl {
                 }
                 logger.debug(" Line ----" + imei, imsi, msisdn, timeStamp, protocol);
                 Book book = createBook(imei, imsi, msisdn, timeStamp, protocol, folder_name, file_name, event_time);
+
+                {
+                    if (blackListed.equalsIgnoreCase("1")) {
+                        Book bookBlackListError = createBook(imei, imsi, msisdn, timeStamp, protocol, folder_name, file_name, event_time);
+                        if (errorBlacklistFile.contains(bookBlackListError)) {
+                            errorBlacklistDuplicate++;
+                        } else {
+                            inBlacklistErrorSet++;
+                            errorBlacklistFile.add(bookBlackListError);
+                        }
+                        line = br.readLine();
+                        blacklisterror++;
+                        iBlackListerror++;
+                        continue;
+                    }
+
+
+                }
                 {
                     if ((imei.isEmpty() || imei.matches("^[0]*$"))) {
                         if (imeiValCheckMap.get("EDR_NULL_IMEI_CHECK").equalsIgnoreCase("true")) {
@@ -102,8 +122,8 @@ public class RecordServiceImpl {
                             || ((imeiValCheckMap.get("EDR_IMEI_LENGTH_CHECK").equalsIgnoreCase("true"))
                             && !(Arrays.asList(myArray).contains(String.valueOf(imei.length()))))
                             || (!imei.matches("^[ 0-9 ]+$") && imeiValCheckMap.get("EDR_ALPHANUMERIC_IMEI_CHECK").equalsIgnoreCase("true"))) {
-                        logger.debug("Wrong record: imsi/mssidn-> empty, >20, !a-Z0-9 :: [" + imsi + "][ " + msisdn + "]"
-                                + " OR imei->When length check defined & length criteria not met,non numeric with alphaNum Check true :[" + imei + "] ");
+                        logger.debug("Wrong record: imsi/mssidn-> empty, >20, !a-Z0-9 :: [" + imsi + "][ " + msisdn + "]" + " OR imei->When length check defined & length criteria not met,non numeric with alphaNum Check true :[" + imei + "] ");
+
                         Book bookError = createBook(imei, imsi, msisdn, timeStamp, protocol, folder_name, file_name, event_time);
                         if (errorFile.contains(bookError)) {
                             errorDuplicate++;

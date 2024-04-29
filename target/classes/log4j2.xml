@@ -1,0 +1,23 @@
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%C{1}][%F][%M()] :%L - %msg%n" />
+        </Console>
+        <RollingFile name="rollingFile" fileName="/u02/ceirdata/logs/extras/EDRp1p2.log"
+                     filePattern="/u02/ceirdata/logs/extras/EDRp1p2s-%d{dd-MMM}.log" ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>%d{HH:mm:ss.SSS} %-5level [%C{1}][%F][%M()] :%L - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="rollingFile" />
+        </Root>
+    </Loggers>
+</Configuration>

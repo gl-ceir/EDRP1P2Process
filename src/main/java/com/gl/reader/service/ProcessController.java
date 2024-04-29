@@ -39,10 +39,12 @@ public class ProcessController {
     public static Logger logger = LogManager.getLogger(ProcessController.class);
     public static long duplicate = 0;
     public static long error = 0;
+    public static long blacklisterror = 0;
     public static long inSet = 0;
     public static long totalCount = 0;
     public static long iduplicate = 0;
     public static long ierror = 0;
+    public static long iBlackListerror = 0;
     public static long iinSet = 0;
     public static long itotalCount = 0;
     public static long value;
@@ -54,7 +56,10 @@ public class ProcessController {
     public static String operatorName;
     public static String eventTime;
     public static long errorDuplicate = 0;
+    public static long errorBlacklistDuplicate = 0;
     public static long inErrorSet = 0;
+    public static long inBlacklistErrorSet = 0;
+
     public static long totalFileCount = 0;
     public static long totalFileRecordsCount = 0;
     public static String inputLocation;
@@ -72,6 +77,7 @@ public class ProcessController {
 
     public static String auddbName = null;
     public static Set<Book> errorFile = new HashSet<>();
+    public static Set<Book> errorBlacklistFile = new HashSet<>();
     public static Set<String> reportTypeSet = new HashSet<>();
     public static List<String> pattern = new ArrayList<>();
     public static HashMap<String, HashMap<String, Book>> BookHashMap = new HashMap<>();
@@ -106,12 +112,10 @@ public class ProcessController {
             procesStart_timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
             appdbName = propertiesReader.appdbName;
             edrappdbName = propertiesReader.edrappdbName;
-
             auddbName = propertiesReader.auddbName;
             value = propertiesReader.filesCount;  // FILES-COUNT-PER-REPORT=-1
             extension = propertiesReader.extension;
-
-            inputLocation = propertiesReader.inputLocation.replace("{DATA_HOME}",System.getenv("DATA_HOME") );   // System.getenv("DATA_HOME")
+            inputLocation = propertiesReader.inputLocation.replace("{DATA_HOME}", System.getenv("DATA_HOME"));   // System.getenv("DATA_HOME")
             outputLocation = propertiesReader.outputLocation.replace("{DATA_HOME}", System.getenv("DATA_HOME"));  //System.getenv("DATA_HOME")
             returnCount = sourceName.equalsIgnoreCase("all") ? propertiesReader.rowCountForSplit : 0;
             servername = propertiesReader.servername;
@@ -157,7 +161,8 @@ public class ProcessController {
                         eventTime = getArrivalTimeFromFilePattern(sourceName, file.getName());
                         if ((!sourceName.contains("all")) && (eventTime == null)) {
                             logger.info("File Move to Error Folder: III FileName: " + file.getName() + ", Date: " + DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
-                                    + ", Start Time: " + startTime + ", End Time: " + Instant.now(offsetClock) + ", Time Taken: , Operator Name: " + operatorName + ", Source Name: " + sourceName + ", TPS: " + Tps + ", Error: " + ierror + ", inSet: " + iinSet + ", totalCount: " + itotalCount + ", duplicate: " + iduplicate + ", volume: " + inputOffset + ", tag: " + tag + ", EventTime Tag  is null");
+                                    + ", Start Time: " + startTime + ", End Time: " + Instant.now(offsetClock) + ", Time Taken: , Operator Name: " + operatorName + ", Source Name: " + sourceName + ", TPS: " + Tps + ", Error::: "
+                                  +",iBlackListerror:" + iBlackListerror +  ",,i error:"+ ierror + ", inSet: " + iinSet + ", totalCount: " + itotalCount + ", duplicate: " + iduplicate + ", volume: " + inputOffset + ", tag: " + tag + ", EventTime Tag  is null");
                             Path pathFolder = Paths.get(outputLocation + "/" + operatorName + "/" + sourceName + "/error/" + year + "/" + month + "/" + day);
                             if (!Files.exists(pathFolder)) {
                                 Files.createDirectories(pathFolder);
@@ -165,12 +170,11 @@ public class ProcessController {
                             Files.move(Paths.get(inputLocation + "/" + operatorName + "/" + sourceName + "/" + file.getName()),
                                     Paths.get(outputLocation + "/" + operatorName + "/" + sourceName + "/error/" + year + "/" + month + "/" + day + "/" + file.getName()));
                             FilePreProcessing.insertReportv2("I", file.getName(), itotalCount, ierror, iduplicate, iinSet,
-                                    startTime1.toString(), Instant.now(offsetClock).toString(), 0.0f, Tps, operatorName, sourceName, inputOffset, tag, 1, headCount, servername);
+                                    startTime1.toString(), Instant.now(offsetClock).toString(), 0.0f, Tps, operatorName, sourceName, inputOffset, tag, 1, headCount, servername  ,iBlackListerror);
                             processed++;
                             continue;
                         }
                         logger.info("Inside Loop::  Value: " + filRetriver + " . Processed : " + processed + " folder/sourceName" + sourceName);
-                        logger.info("ims_sources:: " + ims_sources);
                         if (processed < filRetriver) {
                             fileName = file.getName();
                             boolean check = readRecordsFromFileAndCreateHash(file.getName());
@@ -194,9 +198,10 @@ public class ProcessController {
                             Tps = itotalCount / timeTakenF;
                             logger.info(" Input File Report -- III FileName: " + fileName + ", Date: " + dtf.format(now) + ", Start Time: " + startTime + ", End Time: " + endTime + ", Time Taken: " + timeTakenF + ", Operator Name: " + operatorName + ", Source Name: " + sourceName + ", TPS: " + Tps + ", Error: " + ierror + ", inSet: " + iinSet + ", totalCount: " + itotalCount + ", duplicate: " + iduplicate + ", volume: " + inputOffset + ", tag: " + tag);
                             fileCount++;
-                            FilePreProcessing.insertReportv2("I", fileName, itotalCount, ierror, iduplicate, iinSet, startTime1.toString(), endTime.toString(), timeTakenF, Tps, operatorName, sourceName, inputOffset, tag, 1, headCount, servername);
+                            FilePreProcessing.insertReportv2("I", fileName, itotalCount, ierror, iduplicate, iinSet, startTime1.toString(), endTime.toString(), timeTakenF, Tps, operatorName, sourceName, inputOffset, tag, 1, headCount, servername,iBlackListerror);
                             headCount = 0;
                             ierror = 0;
+                            iBlackListerror=0;
                             iinSet = 0;
                             itotalCount = 0;
                             iduplicate = 0;
@@ -216,10 +221,11 @@ public class ProcessController {
                             }
                             Tps = totalCount / timeTakenF;
                             logger.info("Output File Report  In FileName: " + fileName + ", Date: " + dtf.format(now) + ", Start Time: " + startTimeOutput1 + ", End Time: " + endTimeOutput + ", Time Taken: " + timeTakenF + ", Operator Name: " + operatorName + ", Source Name: " + sourceName + ", TPS: " + Tps + ", Error: " + error + ", inSet: " + inSet + ", totalCount: " + totalCount + ", duplicate: " + duplicate + ", volume: " + outputOffset + ", tag: " + tag);
-                            FilePreProcessing.insertReportv2("O", fileName, totalCount, error, duplicate, inSet, startTimeOutput1, endTimeOutput.toString(), timeTakenF, Tps, operatorName, sourceName, outputOffset, tag, fileCount, headCount, servername);
+                            FilePreProcessing.insertReportv2("O", fileName, totalCount, error, duplicate, inSet, startTimeOutput1, endTimeOutput.toString(), timeTakenF, Tps, operatorName, sourceName, outputOffset, tag, fileCount, headCount, servername ,blacklisterror);
                             headCount = 0;
                             updateModuleAudit(conn, 202, "Processing", "", insertedKey, startexecutionTimeNew, totalFileRecordsCount, totalFileCount);
                             error = 0;
+                            blacklisterror=0;
                             inSet = 0;
                             totalCount = 0;
                             duplicate = 0;
@@ -232,6 +238,10 @@ public class ProcessController {
                             errorDuplicate = 0;
                             inErrorSet = 0;
                             errorFile.clear();
+                            makeBlacklistErrorCsv(outputLocation, operatorName, sourceName, fileName, errorBlacklistFile);//makeErrorCsv();
+                            logger.info(" Blacklist Error Csv Craeted" + ", Error: " + errorBlacklistDuplicate + ", inBlacklistErrorSet: " + inBlacklistErrorSet);
+                            errorBlacklistDuplicate = 0;
+
                         }
                     } else {   // file Extention Check
                         logger.info("No file or Incorrect file format present PATTERZN");
@@ -252,12 +262,13 @@ public class ProcessController {
                         timeTakenF = (float) 0.001;
                     }
                     Tps = totalCount / timeTakenF;
-                    FilePreProcessing.insertReportv2("O", fileName, totalCount, error, duplicate, inSet, startTimeOutput1, endTimeOutput.toString(), timeTakenF, Tps, operatorName, sourceName, outputOffset, tag, fileCount, headCount, servername);
+                    FilePreProcessing.insertReportv2("O", fileName, totalCount, error, duplicate, inSet, startTimeOutput1, endTimeOutput.toString(), timeTakenF, Tps, operatorName, sourceName, outputOffset, tag, fileCount, headCount, servername,blacklisterror);
                     totalFileCount += fileCount;
                     totalFileRecordsCount += totalCount;
                     updateModuleAudit(conn, 202, "Processing", "", insertedKey, startexecutionTimeNew, totalFileRecordsCount, totalFileCount);
                     headCount = 0;
                     error = 0;
+                    blacklisterror=0;
                     inSet = 0;
                     totalCount = 0;
                     duplicate = 0;
@@ -270,6 +281,12 @@ public class ProcessController {
                     errorDuplicate = 0;
                     inErrorSet = 0;
                     errorFile.clear();
+
+                    makeBlacklistErrorCsv(outputLocation, operatorName, sourceName, fileName, errorBlacklistFile);//makeErrorCsv();
+                    logger.info(" Blacklist Error Csv Craeted" + ", Error: " + errorBlacklistDuplicate + ", inBlacklistErrorSet: " + inBlacklistErrorSet);
+                    errorBlacklistDuplicate = 0;
+                    inBlacklistErrorSet=0;
+
                 }
             }
         } catch (Exception e) {
@@ -295,7 +312,7 @@ public class ProcessController {
                 String currentTime = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
                 FilePreProcessing.insertReportv2("O", "0", 0L, 0L, 0L, 0L,
                         currentTime, currentTime, (float) 0, (float) 0, operatorName, sourceName,
-                        0L, tag, 0, headCount, servername);
+                        0L, tag, 0, headCount, servername,0L);
                 int insertedKey = ModulesAudit.insertModuleAudit(conn, sourceName.equalsIgnoreCase("all") ? "P2" : "P1", operatorName + "_" + sourceName, servername);
                 updateModuleAudit(conn, 200, "Success", "", insertedKey, new Date().getTime(), 0, 0);
                 System.exit(0);

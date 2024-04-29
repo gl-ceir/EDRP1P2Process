@@ -18,13 +18,13 @@ public class FilePreProcessing {
     public static void insertReportv2(String fileType, String fileName, Long totalRecords, Long totalErrorRecords,
                                       Long totalDuplicateRecords, Long totalOutputRecords, String startTime, String endTime, Float timeTaken,
                                       Float tps, String operatorName, String sourceName, long volume, String tag, Integer FileCount,
-                                      Integer headCount, String servername) {
+                                      Integer headCount, String servername, Long totalBlackListedError) {
 
         logger.info("Output File Report Final Out FileName: " + fileName + ", Date: " + LocalDateTime.now() + ", Start Time: "
                 + startTime + ", End Time: " + endTime + ", Time Taken: " + timeTaken
                 + ", Operator Name: " + operatorName + ", Source Name: " + sourceName + ", TPS: " + Tps
                 + ", Error: " + totalErrorRecords + ", inSet: " + totalOutputRecords + ", totalCount: " + totalErrorRecords
-                + ", duplicate: " + totalDuplicateRecords + ", volume: " + volume + ", tag: " + tag + "; File Processed  " + FileCount);
+                + ", duplicate: " + totalDuplicateRecords + ", volume: " + volume + ", tag: " + tag + "; File Processed  " + FileCount + ",,totalBlackListedError" + totalBlackListedError);
         logger.debug("Connection:::::" + conn);
         try (Statement stmt = conn.createStatement();) {
             endTime = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
@@ -33,11 +33,11 @@ public class FilePreProcessing {
             }
             String dateFunc = defaultStringtoDate(procesStart_timeStamp);
             String sql = "Insert into " + edrappdbName
-                    + ".edr_file_pre_processing_detail(CREATED_ON,MODIFIED_ON,FILE_TYPE,TOTAL_RECORDS,TOTAL_ERROR_RECORDS,TOTAL_DUPLICATE_RECORDS,TOTAL_OUTPUT_RECORDS,FILE_NAME,START_TIME,END_TIME,TIME_TAKEN,TPS,OPERATOR_NAME,SOURCE_NAME,VOLUME,TAG,FILE_COUNT , HEAD_COUNT ,servername )"
+                    + ".edr_file_pre_processing_detail(CREATED_ON,MODIFIED_ON,FILE_TYPE,TOTAL_RECORDS,TOTAL_ERROR_RECORDS,TOTAL_DUPLICATE_RECORDS,TOTAL_OUTPUT_RECORDS,FILE_NAME,START_TIME,END_TIME,TIME_TAKEN,TPS,OPERATOR_NAME,SOURCE_NAME,VOLUME,TAG,FILE_COUNT , HEAD_COUNT ,servername, total_blacklist_record )"
                     + "values(" + dateFunc + " , CURRENT_TIMESTAMP , '" + fileType + "'," + totalRecords + "," + totalErrorRecords + ","
                     + totalDuplicateRecords + "," + totalOutputRecords + ",'" + fileName + "'," + defaultStringtoDate(startTime) + ","
                     + defaultStringtoDate(endTime) + "," + timeTaken + "," + tps + ",'" + operatorName + "','" + sourceName + "'," + volume
-                    + ",'" + tag + "'," + FileCount + "  ," + headCount + " , '" + servername + "'    )";
+                    + ",'" + tag + "'," + FileCount + "  ," + headCount + " , '" + servername + "' , '" + totalBlackListedError + "'        )";
             logger.info("Inserting into table  pre_processing  _report:: " + sql);
             stmt.executeUpdate(sql);
         } catch (Exception e) {
