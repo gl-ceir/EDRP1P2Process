@@ -43,7 +43,7 @@ public class RecordServiceImpl {
             String[] myArray = imeiValCheckMap.get("EDR_IMEI_LENGTH_VALUE").split(",");
             BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.US_ASCII);
             //int headCount;
-            if (sourceName.equals("all")) {
+            if (sourceName.contains("all")) {
                 br.readLine();
                 headCount++;
             }
@@ -53,7 +53,8 @@ public class RecordServiceImpl {
                 totalCount++; // dec
                 String[] attributes = line.split(attributeSplitor, -1);
                 inputOffset += line.getBytes(StandardCharsets.US_ASCII).length + 1; // 1 is for line separator
-                if (sourceName.equals("all")) {
+
+                if (sourceName.contains("all")) {
                     imei = attributes[0];
                     imsi = attributes[1];
                     msisdn = attributes[2];
@@ -79,7 +80,6 @@ public class RecordServiceImpl {
                 }
                 logger.debug(" Line ----" + imei, imsi, msisdn, timeStamp, protocol);
                 Book book = createBook(imei, imsi, msisdn, timeStamp, protocol, folder_name, file_name, event_time);
-
                 {
                     if (blackListed.equalsIgnoreCase("1")) {
                         Book bookBlackListError = createBook(imei, imsi, msisdn, timeStamp, protocol, folder_name, file_name, event_time);

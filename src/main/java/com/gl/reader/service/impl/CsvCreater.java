@@ -60,6 +60,10 @@ public class CsvCreater {
                 fileWriter.append(String.valueOf(csvf.getFileName()));
                 fileWriter.append(propertiesReader.commaDelimiter);
                 fileWriter.append(String.valueOf(csvf.getEventTime()));
+
+                fileWriter.append(propertiesReader.commaDelimiter);
+                fileWriter.append(sourceName);
+
                 fileWriter.append(propertiesReader.newLineSeprator);
                 fileWriter.flush();
             }
@@ -105,6 +109,9 @@ public class CsvCreater {
                 fileWriter.append(String.valueOf(csvf.getFileName()));
                 fileWriter.append(propertiesReader.commaDelimiter);
                 fileWriter.append(String.valueOf(csvf.getEventTime()));
+                fileWriter.append(propertiesReader.commaDelimiter);
+                fileWriter.append(sourceName);
+
                 fileWriter.append(propertiesReader.newLineSeprator);
                 fileWriter.flush();
             }
@@ -175,6 +182,10 @@ public class CsvCreater {
                         fileWriter.append(String.valueOf(csvf3.getValue().getFileName()));
                         fileWriter.append(propertiesReader.commaDelimiter);
                         fileWriter.append(String.valueOf(csvf3.getValue().getEventTime()));
+
+                        fileWriter.append(propertiesReader.commaDelimiter);
+                        fileWriter.append(sourceName);
+
                         fileWriter.append(propertiesReader.newLineSeprator);
                         fileWriter.flush();
                     }
@@ -205,6 +216,10 @@ public class CsvCreater {
                             fileWriter.append(String.valueOf(csvf3.getValue().getFileName()));
                             fileWriter.append(propertiesReader.commaDelimiter);
                             fileWriter.append(String.valueOf(csvf3.getValue().getEventTime()));
+
+                            fileWriter.append(propertiesReader.commaDelimiter);
+                            fileWriter.append(sourceName);
+
                             fileWriter.append(propertiesReader.newLineSeprator);
                             count++;
                             fileWriter.flush();
@@ -240,6 +255,8 @@ public class CsvCreater {
                             fileWriter.append(String.valueOf(csvf3.getValue().getFileName()));
                             fileWriter.append(propertiesReader.commaDelimiter);
                             fileWriter.append(String.valueOf(csvf3.getValue().getEventTime()));
+                            fileWriter.append(propertiesReader.commaDelimiter);
+                            fileWriter.append(sourceName);
                             fileWriter.append(propertiesReader.newLineSeprator);
                             count++;
                             fileWriter.flush();
