@@ -2,6 +2,7 @@ package com.gl.reader.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,10 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gl.reader.service.ProcessController.file_patterns;
 import static com.gl.reader.service.ProcessController.*;
-import static com.gl.reader.service.ProcessController.propertiesReader;
 
+@Component
 public class FileReaderService {
     static Logger logger = LogManager.getLogger(FileReaderService.class);
 
@@ -58,7 +58,6 @@ public class FileReaderService {
         logger.info("File arrival date  " + imei_arrivalTime);
         return imei_arrivalTime;
     }
-
 
 
     public static void moveFileToError(String fileName) throws IOException {

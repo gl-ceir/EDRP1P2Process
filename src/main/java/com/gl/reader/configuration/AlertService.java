@@ -6,13 +6,12 @@ package com.gl.reader.configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-/**
- * @author maverick
- */
+@Component
 public class AlertService {
 
     static Logger logger = LogManager.getLogger(AlertService.class);

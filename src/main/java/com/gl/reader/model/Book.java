@@ -1,22 +1,24 @@
 package com.gl.reader.model;
 
+import java.util.Date;
+
 public class Book {
 	private String IMEI;
 	private String IMSI;
 	private String MSISDN;
-	private String recordType;
-	private String systemType;
+	private Date timeStamp;
+	private String protocol;
 	private String sourceName;
 	private String fileName;
 	private String eventTime;
-	public Book(String iMEI, String iMSI, String mSISDN, String recordType, String systemType, String sourceName,
-			String fileName, String eventTime) {
+	public Book(String iMEI, String iMSI, String mSISDN, Date timeStamp, String protocol, String sourceName,
+				String fileName, String eventTime) {
 		super();
 		IMEI = iMEI;
 		IMSI = iMSI;
 		MSISDN = mSISDN;
-		this.recordType = recordType;
-		this.systemType = systemType;
+		this.timeStamp = timeStamp;
+		this.protocol = protocol;
 		this.sourceName = sourceName;
 		this.fileName = fileName;
 		this.eventTime = eventTime;
@@ -39,17 +41,20 @@ public class Book {
 	public void setMSISDN(String mSISDN) {
 		MSISDN = mSISDN;
 	}
-	public String getRecordType() {
-		return recordType;
+
+	public Date getTimeStamp() {
+		return timeStamp;
 	}
-	public void setRecordType(String recordType) {
-		this.recordType = recordType;
+
+	public void setTimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
 	}
-	public String getSystemType() {
-		return systemType;
+
+	public String getProtocol() {
+		return protocol;
 	}
-	public void setSystemType(String systemType) {
-		this.systemType = systemType;
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 	public String getSourceName() {
 		return sourceName;
@@ -70,6 +75,7 @@ public class Book {
 		this.eventTime = eventTime;
 	}
 	@Override
+
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -78,9 +84,9 @@ public class Book {
 		result = prime * result + ((MSISDN == null) ? 0 : MSISDN.hashCode());
 		result = prime * result + ((eventTime == null) ? 0 : eventTime.hashCode());
 		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
-		result = prime * result + ((recordType == null) ? 0 : recordType.hashCode());
+		result = prime * result + ((timeStamp == null) ? 0 : timeStamp.hashCode());
 		result = prime * result + ((sourceName == null) ? 0 : sourceName.hashCode());
-		result = prime * result + ((systemType == null) ? 0 : systemType.hashCode());
+		result = prime * result + ((protocol == null) ? 0 : protocol.hashCode());
 		return result;
 	}
 	@Override
@@ -117,38 +123,35 @@ public class Book {
 				return false;
 		} else if (!fileName.equals(other.fileName))
 			return false;
-		if (recordType == null) {
-			if (other.recordType != null)
+		if (timeStamp == null) {
+			if (other.timeStamp != null)
 				return false;
-		} else if (!recordType.equals(other.recordType))
+		} else if (!timeStamp.equals(other.timeStamp))
 			return false;
 		if (sourceName == null) {
 			if (other.sourceName != null)
 				return false;
 		} else if (!sourceName.equals(other.sourceName))
 			return false;
-		if (systemType == null) {
-			if (other.systemType != null)
+		if (protocol == null) {
+			if (other.protocol != null)
 				return false;
-		} else if (!systemType.equals(other.systemType))
+		} else if (!protocol.equals(other.protocol))
 			return false;
 		return true;
 	}
 	@Override
 	public String toString() {
-		return "Book [IMEI=" + IMEI + ", IMSI=" + IMSI + ", MSISDN=" + MSISDN + ", recordType=" + recordType
-				+ ", systemType=" + systemType + ", sourceName=" + sourceName + ", fileName=" + fileName
+		return "Book [IMEI=" + IMEI + ", IMSI=" + IMSI + ", MSISDN=" + MSISDN + ", timeStamp=" + timeStamp
+				+ ", protocol=" + protocol + ", sourceName=" + sourceName + ", fileName=" + fileName
 				+ ", eventTime=" + eventTime + "]";
 	}
-
-
-
-	public static Book createBook(String IMEI, String IMSI, String MSISDN, String system_type, String record_type,
+	public static Book createBook(String IMEI, String IMSI, String MSISDN,Date  timeStamp,String protocol,
 								   String source_name, String file_name, String event_time) {
 		String msisdn = (( MSISDN.trim().startsWith("00"))
 				? MSISDN.substring(2)
 				: MSISDN).replace("1AO", "855");
-		return new Book(IMEI, IMSI, msisdn, record_type, system_type, source_name, file_name, event_time);
+		return new Book(IMEI, IMSI, msisdn, timeStamp, protocol, source_name, file_name, event_time);
 	}
 
 	

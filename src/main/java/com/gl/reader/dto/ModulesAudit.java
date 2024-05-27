@@ -19,7 +19,7 @@ public class ModulesAudit {
         String query = " insert into  " + auddbName + ".modules_audit_trail " + "(status_code,status,feature_name,"
                 + "info, count2,action," + "server_name,execution_time,module_name,failure_count) "
                 + "values('201','Initial', '" + featureName + "', '" + processName + "' ,'0','Insert', '"
-                + servername + "','0','ETL','0')";
+                + servername + "','0','EDR','0')";
         logger.info(query);
         try {
             PreparedStatement ps = null;

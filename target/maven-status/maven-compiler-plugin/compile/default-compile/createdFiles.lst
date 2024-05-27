@@ -1,0 +1,14 @@
+com/gl/reader/configuration/AlertService.class
+com/gl/reader/configuration/ConnectionConfiguration.class
+com/gl/reader/model/Book.class
+com/gl/reader/EdrP1P2Process.class
+com/gl/reader/service/impl/RecordServiceImpl.class
+com/gl/reader/service/impl/CsvCreater.class
+com/gl/reader/dto/ModulesAudit.class
+com/gl/reader/dto/SysParam.class
+com/gl/reader/dto/FilePreProcessing.class
+com/gl/reader/constants/Alerts.class
+com/gl/reader/service/impl/FileReaderService.class
+com/gl/reader/dto/Alert.class
+com/gl/reader/service/ProcessController.class
+com/gl/reader/configuration/PropertiesReader.class
