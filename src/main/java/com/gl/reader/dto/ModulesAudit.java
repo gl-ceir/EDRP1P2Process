@@ -52,8 +52,8 @@ public class ModulesAudit {
             exec_time = " '" + executionFinishTiime + "' ";
         }
         try (Statement stmt = conn.createStatement()) {
-            String query = "update   " + auddbName + ".modules_audit_trail set status_code='" + statusCode + "',status='" + status + "',error_message='" + errorMessage + "', count='" + numberOfRecord + "',"
-                    + "action='insert', execution_time = " + exec_time + "  ,  modified_on = CURRENT_TIMESTAMP , failure_count='0' , count2='" + totalFileCount + "'     where  id = " + id;
+            String query = "update   " + auddbName + ".modules_audit_trail set status_code='" + statusCode + "',status='" + status + "',error_message='" + errorMessage + "', count='" + totalFileCount  + "',"
+                    + "action='insert', execution_time = " + exec_time + "  ,  modified_on = CURRENT_TIMESTAMP , failure_count='0' , count2='" + numberOfRecord + "'     where  id = " + id;
             logger.info(query);
             stmt.executeUpdate(query);
         } catch (Exception e) {

@@ -94,8 +94,6 @@ public class RecordServiceImpl {
                         iBlackListerror++;
                         continue;
                     }
-
-
                 }
                 {
                     if ((imei.isEmpty() || imei.matches("^[0]*$"))) {
@@ -117,12 +115,12 @@ public class RecordServiceImpl {
                         }
                     }
 
-                    if (imsi.isEmpty() || msisdn.length() > 20 || (!msisdn.matches("^[a-zA-Z0-9_]*$"))
-                            || imsi.length() > 20 || (!imsi.matches("^[a-zA-Z0-9_]*$"))
+                    if (imsi.isEmpty() || msisdn.length() > 20 || (!msisdn.matches("^[ 0-9 ]*$"))
+                            || imsi.length() > 20 || (!imsi.matches("^[0-9 ]*$"))
                             || ((imeiValCheckMap.get("EDR_IMEI_LENGTH_CHECK").equalsIgnoreCase("true"))
                             && !(Arrays.asList(myArray).contains(String.valueOf(imei.length()))))
                             || (!imei.matches("^[ 0-9 ]+$") && imeiValCheckMap.get("EDR_ALPHANUMERIC_IMEI_CHECK").equalsIgnoreCase("true"))) {
-                        logger.debug("Wrong record: imsi/mssidn-> empty, >20, !a-Z0-9 :: [" + imsi + "][ " + msisdn + "]" + " OR imei->When length check defined & length criteria not met,non numeric with alphaNum Check true :[" + imei + "] ");
+                        logger.debug("Wrong record: imsi/mssidn-> empty, >20, ! 0-9 :: [" + imsi + "][ " + msisdn + "]" + " OR IMEI->When length check defined & length criteria not met,non numeric with alphaNum Check true :[" + imei + "] ");
 
                         Book bookError = createBook(imei, imsi, msisdn, timeStamp, protocol, folder_name, file_name, event_time);
                         if (errorFile.contains(bookError)) {
